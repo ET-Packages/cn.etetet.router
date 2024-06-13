@@ -110,7 +110,7 @@ namespace ET.Server
                         break;
                     case RouterStatus.Msg:
                         // 比session超时应该多10秒钟
-                        if (timeNow > node.LastRecvOuterTime + ConstValue.SessionTimeoutTime + 10 * 1000)
+                        if (timeNow > node.LastRecvOuterTime + SessionIdleCheckerComponentSystem.SessionTimeoutTime + 10 * 1000)
                         {
                             self.OnError(id, ErrorCore.ERR_KcpRouterTimeout);
                             continue;

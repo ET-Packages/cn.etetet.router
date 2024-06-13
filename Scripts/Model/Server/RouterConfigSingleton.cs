@@ -11,7 +11,7 @@ namespace ET.Server
         {
             foreach (StartSceneConfig startSceneConfig in StartSceneConfigCategory.Instance.GetAll().Values)
             {
-                if (startSceneConfig.Type == SceneType.Router)
+                if (startSceneConfig.SceneType == nameof(SceneType.Router))
                 {
                     this.routers.Add(startSceneConfig);
                 }
