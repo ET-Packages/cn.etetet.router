@@ -12,16 +12,21 @@ namespace ET.Server
         [EntitySystem]
         private static void Awake(this RouterComponent self, IPEndPoint outerAddress, string innerIP)
         {
-            self.OuterUdp = new UdpTransport(outerAddress);
+#if UNITY_WEBGL && !UNITY_EDITOR
+            self.OuterTcp = new WebSocketTransport(outerAddress);
+#else
             self.OuterTcp = new TcpTransport(outerAddress);
+            self.OuterUdp = new UdpTransport(outerAddress);
+#endif
+            
             self.InnerSocket = new UdpTransport(new IPEndPoint(IPAddress.Parse(innerIP), 0));
         }
         
         [EntitySystem]
         private static void Destroy(this RouterComponent self)
         {
-            self.OuterUdp.Dispose();
-            self.OuterTcp.Dispose();
+            self.OuterUdp?.Dispose();
+            self.OuterTcp?.Dispose();
             self.InnerSocket.Dispose();
             self.IPEndPoint = null;
         }
@@ -29,8 +34,8 @@ namespace ET.Server
         [EntitySystem]
         private static void Update(this RouterComponent self)
         {
-            self.OuterUdp.Update();
-            self.OuterTcp.Update();
+            self.OuterUdp?.Update();
+            self.OuterTcp?.Update();
             self.InnerSocket.Update();
             long timeNow = TimeInfo.Instance.ClientNow();
             self.RecvOuterUdp(timeNow);
