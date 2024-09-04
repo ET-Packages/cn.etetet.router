@@ -12,7 +12,7 @@ namespace ET.Server
         [EntitySystem]
         private static void Awake(this RouterComponent self, IPEndPoint outerAddress, string innerIP)
         {
-#if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL
             self.OuterTcp = new WebSocketTransport(outerAddress);
 #else
             self.OuterTcp = new TcpTransport(outerAddress);
@@ -151,7 +151,6 @@ namespace ET.Server
             {
                 return;
             }
-
             // accept
             byte flag = self.Cache[0];
             switch (flag)
@@ -230,7 +229,6 @@ namespace ET.Server
                     {
                         break;
                     }
-                    
                     uint outerConn = BitConverter.ToUInt32(self.Cache, 1);
                     uint innerConn = BitConverter.ToUInt32(self.Cache, 5);
                     uint connectId = BitConverter.ToUInt32(self.Cache, 9);
@@ -242,7 +240,6 @@ namespace ET.Server
                         Log.Warning($"kcp router syn status innerConn != 0: {outerConn} {innerConn}");
                         break;
                     }
-                    
                     RouterNode routerNode = self.GetChild<RouterNode>(outerConn);
                     if (routerNode == null)
                     {
@@ -290,6 +287,7 @@ namespace ET.Server
                         Log.Warning($"router sync error2: {routerNode.OuterConn} {routerNode.InnerAddress} {outerConn} {realAddress}");
                         break;
                     }
+                    
                     routerNode.KcpTransport = transport;
                     self.Cache.WriteTo(0, KcpProtocalType.RouterACK);
                     self.Cache.WriteTo(1, routerNode.InnerConn);
@@ -310,7 +308,6 @@ namespace ET.Server
                     {
                         break;
                     }
-
                     uint outerConn = BitConverter.ToUInt32(self.Cache, 1); // remote
                     uint innerConn = BitConverter.ToUInt32(self.Cache, 5);
                     
@@ -346,7 +343,6 @@ namespace ET.Server
                     Array.Copy(addressBytes, 0, self.Cache, 9, addressBytes.Length);
                     Log.Info($"kcp router syn: {outerConn} {innerConn} {routerNode.InnerIpEndPoint} {routerNode.OuterIpEndPoint}");
                     self.InnerSocket.Send(self.Cache, 0, 9 + addressBytes.Length, routerNode.InnerIpEndPoint);
-
                     if (!routerNode.CheckOuterCount(timeNow))
                     {
                         self.OnError(routerNode.Id, ErrorCore.ERR_KcpRouterTooManyPackets);
