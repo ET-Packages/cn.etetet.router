@@ -1,7 +1,7 @@
 ﻿{
   "name": "cn.etetet.router",
   "displayName": "ET.Router",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "unity": "2022.3",
   "description": "et的软路由，可以防网络攻击",
   "author": {
