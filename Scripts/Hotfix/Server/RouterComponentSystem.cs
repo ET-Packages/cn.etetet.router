@@ -109,7 +109,7 @@ namespace ET.Server
                         // 超时了
                         if (timeNow > node.LastRecvOuterTime + 10 * 1000)
                         {
-                            self.OnError(id, ErrorCore.ERR_KcpRouterConnectFail);
+                            self.OnError(id, ErrorCode.ERR_KcpRouterConnectFail);
                             continue;
                         }
                         break;
@@ -117,7 +117,7 @@ namespace ET.Server
                         // 比session超时应该多10秒钟
                         if (timeNow > node.LastRecvOuterTime + SessionIdleCheckerComponentSystem.SessionTimeoutTime + 10 * 1000)
                         {
-                            self.OnError(id, ErrorCore.ERR_KcpRouterTimeout);
+                            self.OnError(id, ErrorCode.ERR_KcpRouterTimeout);
                             continue;
                         }
                         break;
@@ -193,7 +193,7 @@ namespace ET.Server
                     if (routerNode.ConnectId != connectId)
                     {
                         Log.Warning($"kcp router router reconnect connectId diff, maybe router count too less: {connectId} {routerNode.ConnectId} {routerNode.SyncIpEndPoint} {(IPEndPoint) self.IPEndPoint}");
-                        self.OnError(routerNode.Id, ErrorCore.ERR_KcpRouterSame);
+                        self.OnError(routerNode.Id, ErrorCode.ERR_KcpRouterSame);
                         break;
                     }
                     
@@ -206,7 +206,7 @@ namespace ET.Server
                     
                     if (++routerNode.RouterSyncCount > 40)
                     {
-                        self.OnError(routerNode.Id, ErrorCore.ERR_KcpRouterRouterSyncCountTooMuchTimes);
+                        self.OnError(routerNode.Id, ErrorCode.ERR_KcpRouterRouterSyncCountTooMuchTimes);
                         break;
                     }
                     routerNode.KcpTransport = transport;
@@ -218,7 +218,7 @@ namespace ET.Server
 
                     if (!routerNode.CheckOuterCount(timeNow))
                     {
-                        self.OnError(routerNode.Id, ErrorCore.ERR_KcpRouterTooManyPackets);
+                        self.OnError(routerNode.Id, ErrorCode.ERR_KcpRouterTooManyPackets);
                     }
 
                     break;
@@ -262,7 +262,7 @@ namespace ET.Server
                     
                     if (++routerNode.RouterSyncCount > 40)
                     {
-                        self.OnError(routerNode.Id, ErrorCore.ERR_KcpRouterRouterSyncCountTooMuchTimes);
+                        self.OnError(routerNode.Id, ErrorCode.ERR_KcpRouterRouterSyncCountTooMuchTimes);
                         break;
                     }
 
@@ -296,7 +296,7 @@ namespace ET.Server
 
                     if (!routerNode.CheckOuterCount(timeNow))
                     {
-                        self.OnError(routerNode.Id, ErrorCore.ERR_KcpRouterTooManyPackets);
+                        self.OnError(routerNode.Id, ErrorCode.ERR_KcpRouterTooManyPackets);
                     }
 
                     break;
@@ -320,7 +320,7 @@ namespace ET.Server
 
                     if (++routerNode.SyncCount > 20)
                     {
-                        self.OnError(routerNode.Id, ErrorCore.ERR_KcpRouterSyncCountTooMuchTimes);
+                        self.OnError(routerNode.Id, ErrorCode.ERR_KcpRouterSyncCountTooMuchTimes);
                         break;
                     }
 
@@ -345,7 +345,7 @@ namespace ET.Server
                     self.InnerSocket.Send(self.Cache, 0, 9 + addressBytes.Length, routerNode.InnerIpEndPoint, ChannelType.Connect);
                     if (!routerNode.CheckOuterCount(timeNow))
                     {
-                        self.OnError(routerNode.Id, ErrorCore.ERR_KcpRouterTooManyPackets);
+                        self.OnError(routerNode.Id, ErrorCode.ERR_KcpRouterTooManyPackets);
                     }
 
                     break;
@@ -382,7 +382,7 @@ namespace ET.Server
 
                     if (!routerNode.CheckOuterCount(timeNow))
                     {
-                        self.OnError(routerNode.Id, ErrorCore.ERR_KcpRouterTooManyPackets);
+                        self.OnError(routerNode.Id, ErrorCode.ERR_KcpRouterTooManyPackets);
                     }
 
                     break;
@@ -432,7 +432,7 @@ namespace ET.Server
 
                     if (!routerNode.CheckOuterCount(timeNow))
                     {
-                        self.OnError(routerNode.Id, ErrorCore.ERR_KcpRouterTooManyPackets);
+                        self.OnError(routerNode.Id, ErrorCode.ERR_KcpRouterTooManyPackets);
                     }
 
                     break;
